@@ -24,9 +24,7 @@ let env = cleanEnv(process.env, {
   WEBEX: bool({ desc: "Upload to Webex" })
 });
 
-
 if (env.WEBEX){
-  console.log("WEBEX is set to true");
   var withWebexEnv = cleanEnv(process.env, {
     WEBEX: bool({ desc: "Upload to Webex (Optional)", default: false }),
     WEBEX_API_KEY: str({ desc: "Webex API Key (Required if Webex is set to true, otherwise optional)"}),
@@ -42,28 +40,26 @@ if (env.WEBEX){
   });
 }
 
-env = { ...env, ...withWebexEnv, ...withoutWebexEnv }
+env = { ...env, ...withWebexEnv, ...withoutWebexEnv };
 
-console.log(env)
+(async () => {
+  // Add code here
+  console.log("Deleting all announcements on the org and site level");
 
+  // Let's delete all the announcements on the org and site level
+  var announcementFilesOrg = await webex.getAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID);
+  var announcementFilesSite = await webex.getAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID,env.WEBEX_SITE_ID);
 
-// (async () => {
-//   console.log("Deleting all announcements on the org and site level");
-
-//   // Let's delete all the announcements on the org and site level
-//   var announcementFilesOrg = await webex.getAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID);
-//   var announcementFilesSite = await webex.getAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID,env.WEBEX_SITE_ID);
-
-//   // Org level
-//   if (Array.isArray(announcementFilesOrg.body.announcements)){
-//     for (const files of announcementFilesOrg.body.announcements) {
-//       webex.deleteAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID, files.id).then((result) => { console.log(result); });
-//     }
-//   }
-//   // Site level
-//   if (Array.isArray(announcementFilesSite.body.announcements)){
-//     for (const files of announcementFilesSite.body.announcements) {
-//       webex.deleteAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID, files.id, env.WEBEX_SITE_ID).then((result) => { console.log(result); });
-//     }
-//   }
-// })();
+  // Org level
+  if (Array.isArray(announcementFilesOrg.body.announcements)){
+    for (const files of announcementFilesOrg.body.announcements) {
+      webex.deleteAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID, files.id).then((result) => { console.log(result); });
+    }
+  }
+  // Site level
+  if (Array.isArray(announcementFilesSite.body.announcements)){
+    for (const files of announcementFilesSite.body.announcements) {
+      webex.deleteAnnouncementFiles(env.WEBEX_API_KEY, env.WEBEX_ORG_ID, files.id, env.WEBEX_SITE_ID).then((result) => { console.log(result); });
+    }
+  }
+})();
