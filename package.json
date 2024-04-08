@@ -1,7 +1,7 @@
 {
   "name": "unity-to-webex-audio-importer",
   "version": "1.0.0",
-  "description": "",
+  "description": "NodeJS application to download Cisco Unity Call Handler greetings and upload to Webex Announcement Files Repository",
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production node index.js",
@@ -15,7 +15,7 @@
     "docker:prune": "docker system prune -a"
   },
   "author": "Jeremy Worden",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
     "envalid": "^8.0.0",
