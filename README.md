@@ -33,6 +33,7 @@ docker run -d --rm -v ./data:/app/data --env-file=.env sieteunoseis/unity-to-web
 CUC_HOSTNAME=devnetsandbox.cisco.com
 CUC_USERNAME=administrator
 CUC_PASSWORD=ciscopsdt
+CUC_LANGUAGE=en-US
 CUC_DOWNLOAD=true
 WEBEX=true
 WEBEX_API_KEY=
@@ -42,13 +43,14 @@ WEBEX_SITE_ID=
 
 | Variable | Description | Required | Default |
 |---|---|---|---|
-| CUC_HOSTNAME | Cisco Unity Connections Hostname or IP Address | Yes |  |
-| CUC_USERNAME | Cisco Unity Connections REST Username | Yes |  |
-| CUC_PASSWORD | Cisco Unity Connections REST Password | Yes |  |
-| CUC_DOWNLOAD | Download wav greetings from Cisco Unity Connections and save before uploading to Webex.   Note: you will need to map a volume to Docker container to access these files. | No | false |
-| WEBEX | Are we uploading the files directly to Webex? If so set this variable to true. Note: If this is set to true, the following two variables are also required. | No | false |
-| WEBEX_API_KEY | Webex API Key (Required if WEBEX is set to true, otherwise optional). | No, unless WEBEX is set to true | null |
-| WEBEX_ORG_ID | Webex ORG ID (Required if WEBEX is set to true, otherwise optional). | No, unless WEBEX is set to true | null |
+| CUC_HOSTNAME | Cisco Unity Connections Hostname or IP Address. | Yes | N/A |
+| CUC_USERNAME | Cisco Unity Connections REST Username. | Yes | N/A |
+| CUC_PASSWORD | Cisco Unity Connections REST Password. | Yes | N/A |
+| CUC_LANGUAGE | Cisco Unity Connections Language Code. | No | en-US |
+| CUC_DOWNLOAD | Download wav greetings from Cisco Unity Connections and save before uploading to Webex.   Note: You will need to map a volume to Docker container to access these files. | No | false |
+| WEBEX | Are we uploading the files directly to Webex? If so set this variable to true. Note: If this is set to true, the following two variables are also required. | Yes | N/A |
+| WEBEX_API_KEY | Webex API Key (Required if WEBEX is set to true, otherwise ignored). | No, unless WEBEX is set to true | null |
+| WEBEX_ORG_ID | Webex ORG ID (Required if WEBEX is set to true, otherwise ignored). | No, unless WEBEX is set to true | null |
 | WEBEX_SITE_ID | Webex Location ID. Set this if you want greetings to be uploaded to a specific location. Otherwise greetings will be uploading to organization level. | No | Null |
 
 ## Giving Back
