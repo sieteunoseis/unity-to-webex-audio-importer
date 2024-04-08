@@ -5,23 +5,23 @@ A NodeJS application that allows you to download Call Handler greetings from Cis
 Cisco Unity Connection Provisioning Interface (CUPI) information can be found at:
 [Cisco Unity Connection Provisioning Interface (CUPI)](https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/connection/REST-API/CUPI_API/b_CUPI-API.html).
 
-## Installation
+## Installation Options
 
-Run as native node application using npm:
+1. Run as native node application using npm:
 
 ```javascript
 npm install
 npm run start
 ```
 
-Build and run using Docker:
+2. Build and run using Docker:
 
 ```bash
 npm run docker:build
 npm run docker:run
 ```
 
-Pull image from Docker.io and run with the following:
+3. Pull image from Docker.io and run with the following:
 
 ```bash
 docker run -d --rm -v ./data:/app/data --env-file=.env sieteunoseis/unity-to-webex-audio-importer:latest
@@ -36,9 +36,9 @@ CUC_PASSWORD=ciscopsdt
 CUC_LANGUAGE=en-US
 CUC_DOWNLOAD=true
 WEBEX=true
-WEBEX_API_KEY=
-WEBEX_ORG_ID=
-WEBEX_SITE_ID=
+WEBEX_API_KEY=<INSERT WEBEX API KEY>
+WEBEX_ORG_ID=<INSERT WEBEX ORG ID>
+WEBEX_LOCATION_ID=<INSERT WEBEX LOCATION ID>
 ```
 
 | Variable | Description | Required | Default |
@@ -51,7 +51,7 @@ WEBEX_SITE_ID=
 | WEBEX | Are we uploading the files directly to Webex? If so set this variable to true. Note: If this is set to true, the following two variables are also required. | Yes | N/A |
 | WEBEX_API_KEY | Webex API Key (Required if WEBEX is set to true, otherwise ignored). | No, unless WEBEX is set to true | null |
 | WEBEX_ORG_ID | Webex ORG ID (Required if WEBEX is set to true, otherwise ignored). | No, unless WEBEX is set to true | null |
-| WEBEX_SITE_ID | Webex Location ID. Set this if you want greetings to be uploaded to a specific location. Otherwise greetings will be uploading to organization level. | No | Null |
+| WEBEX_LOCATION_ID | Webex Location ID. Set this if you want greetings to be uploaded to a specific location. Otherwise greetings will be uploading to organization level. | No | Null |
 
 ## Giving Back
 
