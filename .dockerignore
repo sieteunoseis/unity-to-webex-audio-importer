@@ -1,0 +1,21 @@
+# Ignore files and directories commonly used in development
+.git
+.vscode
+node_modules
+env
+
+# Ignore specific files
+.DS_Store
+.env
+*.env
+
+# Ignore build artifacts
+bin
+obj
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore system and hidden files
+.*

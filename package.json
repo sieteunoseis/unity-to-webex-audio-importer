@@ -1,6 +1,6 @@
 {
   "name": "unity-to-webex-audio-importer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "NodeJS application to download Cisco Unity Call Handler greetings and upload to Webex Announcement Files Repository",
   "main": "index.js",
   "scripts": {

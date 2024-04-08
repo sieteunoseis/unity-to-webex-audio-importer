@@ -25,38 +25,33 @@ var env = cleanEnv(process.env, {
   CUC_USERNAME: str({ desc: "Cisco Unity Connections REST Username." }),
   CUC_PASSWORD: str({ desc: "Cisco Unity Connections REST Password." }),
   CUC_LANGUAGE: str({ choices: ["ar-SA","bg-BG","ca-ES","zh-TW","cs-CZ","da-DK","de-DE","gr-GR","en-US","es-ES","fi-FI","fr-FR","he-IL","hu-HU","is-IL","it-IT","ja-JP","ko-KR","nl-NL","nb-NO","pl-PL","pt-BR","rm-CH","ro-RO","ru-RU","hr-HV","sk-SK","sq-al","sv-SE","th-TH","tr-TR","ur-PK","id-ID","uk-UA","be-BY","sl-SI","et-EE","lv-LV","lt-LT","fa-IR","vi-NV","hy-AM","aze-AZ","eu-ES","wen-DE","mk-MK","sot-ZA","ts-MZ","tn-BW","xh-ZA","zu-ZA","af-ZA","ka-GE","fo-FO","hi-IN","mt-MT","gd-GB","ji-XY","ms-MY","kk-KZ","ky-KG","sw-KE","uz-UZ","tt-TR","pa-IN","gu-IN","ta-IN","te-IN","kn-IN","mr-IN","sa-IN","mn-MN","gl-ES","kok-IN","syr-SY","dv-MV","ar-IQ","zh-CN","de-CH","en-GB","es-MX","fr-BE","it-CH","nl-BE","nn-NO","pt-PT","mo-RO","mo-RU","sr-RS","sv-FI","az-AZ","ms-BN","uzb-UZ","ar-EG","zh-HK","de-AT","en-AU","es-XM","fr-CA","sr-CS","ar-LY","zh-SG","de-LU","en-CA","es-GT","fr-CH","ar-DZ","zh-MO","de-LI","en-NZ","es-CR","fr-LU","ar-MA","en-IE","es-PA","fr-MC","ar-TN","en-SA","es-DO","ar-OM","en-JM","es-VE","ar-YE","en-XC","es-CO","ar-SY","en-BZ","es-PE","ar-JO","en-TT","es-AR","ar-LB","en-ZW","es-EC","ar-KW","en-PH","es-CL","ar-AE","es-UY","ar-BH","es-PY","ar-QA","en-IN","es-BO","es-SV","es-HN","es-NI","es-PR"], desc: "Cisco Unity Connections Language Code", default: "en-US" }),  
-  CUC_DOWNLOAD: bool({ desc: "Download greetings from Unity", default: false })
+  CUC_DOWNLOAD: bool({ desc: "Download greetings from Unity (true or false).", default: false }),
+  WEBEX: bool({ desc: "Upload to Webex (true or false)." }),
 });
 
-if (clean(process.env.WEBEX)) {
+if (env.WEBEX) {
   var withWebexEnv = cleanEnv(process.env, {
     WEBEX: bool({ desc: "Upload to Webex (Optional)", default: false }),
     WEBEX_API_KEY: str({ desc: "Webex API Key (Required if Webex is set to true, otherwise optional)" }),
     WEBEX_ORG_ID: str({ desc: "Webex ORG ID (Required if Webex is set to false, otherwise optional)" }),
-    WEBEX_SITE_ID: str({ desc: "Webex SITE ID (Optional, ", default: false }),
+    WEBEX_LOCATION_ID: str({ desc: "Webex Location ID. Set this if you want greetings to be uploaded to a specific location. Otherwise greetings will be uploading to organization level.", default: null }),
   });
 } else {
   var withoutWebexEnv = cleanEnv(process.env, {
     WEBEX: bool({ desc: "Upload to Webex (Optional)", default: false }),
-    WEBEX_API_KEY: str({ desc: "Webex API Key (Required if WEBEX is set to true, otherwise optional)", default: false }),
-    WEBEX_ORG_ID: str({ desc: "Webex ORG ID (Required if WEBEX is set to true, otherwise optional)", default: false }),
-    WEBEX_SITE_ID: str({ desc: "Webex SITE ID (Optional however will not be used unless WEBEX is set to true ", default: false }),
+    WEBEX_API_KEY: str({ desc: "Webex API Key (Required if WEBEX is set to true, otherwise optional)", default: null }),
+    WEBEX_ORG_ID: str({ desc: "Webex ORG ID (Required if WEBEX is set to true, otherwise optional)", default: null }),
+    WEBEX_LOCATION_ID: str({ desc: "Webex Location ID. Set this if you want greetings to be uploaded to a specific location. Otherwise greetings will be uploading to organization level. ", default: null }),
   });
 }
 
+// Let's merge the env variables
 env = { ...env, ...withWebexEnv, ...withoutWebexEnv };
 
+// Let's get the Unity Connection variables from the environment
 let server = env.CUC_HOSTNAME;
 let username = env.CUC_USERNAME;
 let password = env.CUC_PASSWORD;
-
-function clean(value) {
-  const FALSY_VALUES = ["", "null", "false", "undefined"];
-  if (!value || FALSY_VALUES.includes(value)) {
-    return undefined;
-  }
-  return value;
-}
 
 async function retrieveFile(server, username, password, uri, fileName, download = false) {
   var output = {
@@ -165,7 +160,8 @@ async function retrieveFile(server, username, password, uri, fileName, download 
   const date = new Date();
   const timestamp = date.getTime();
   const unityLogName = `unityResults-${timestamp}.log`;
-
+  // Let's write the results to a file and display to console
+  console.log(JSON.stringify(retrieveFileResults, null, 2))
   var dataPath = path.join(__dirname, ".", "data", unityLogName);
 
   fs.writeFile(dataPath, JSON.stringify(retrieveFileResults, null, 2), (err) => {
@@ -181,10 +177,13 @@ async function retrieveFile(server, username, password, uri, fileName, download 
 
     for (const results of retrieveFileResults) {
       if (results.data) {
-        webexPromises.push(limit(() => webex.uploadAnnouncementFiles(results.data, results.fileName, env.WEBEX_API_KEY, env.WEBEX_ORG_ID, env.WEBEX_SITE_ID)));
+        webexPromises.push(limit(() => webex.uploadAnnouncementFiles(results.data, results.fileName, env.WEBEX_API_KEY, env.WEBEX_ORG_ID, env.WEBEX_LOCATION_ID)));
       }
     }
     var webexResults = await Promise.all(webexPromises);
+
+    // Let's write the results to a file and display to console
+    console.log(JSON.stringify(webexResults, null, 2))
     const webexLogName = `webexResults-${timestamp}.log`;
 
     dataPath = path.join(__dirname, ".", "data", webexLogName);
