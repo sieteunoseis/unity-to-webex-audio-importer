@@ -95,8 +95,8 @@ async function retrieveFile(server, username, password, uri, fileName, download 
 (async () => {
   // Array to store all promises
   let promises = [];
-  // Get all call handlers
-  var getCallHandlers = await cupi.getRequest(server, username, password, "vmrest/handlers/callhandlers/");
+  // Get all call handlers. Max is first 2000. If you have more than 2000 call handlers, you will need to adjust the code to handle pagination.
+  var getCallHandlers = await cupi.getRequest(server, username, password, "vmrest/handlers/callhandlers/?query=(IsPrimary is 0)&rowsPerPage=2000");
   // Create an array of call handlers with their ID, Name, and URI
   var callHandlersArr = getCallHandlers.Callhandlers.Callhandler.map((greeting) => {
     let output = {
